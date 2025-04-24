@@ -12,7 +12,12 @@ from .pipeboard_auth import pipeboard_auth_manager
 import time
 
 # Initialize FastMCP server
-mcp_server = FastMCP("meta-ads", use_consistent_tool_format=True)
+mcp_server = FastMCP(
+    "meta-ads",
+    use_consistent_tool_format=True,
+    host="0.0.0.0",     # слушать на всех интерфейсах
+    port=1337,          # порт 1337
+)
 
 # Register resource URIs
 mcp_server.resource(uri="meta-ads://resources")(list_resources)
@@ -125,5 +130,5 @@ def main():
                 print(f"Error: Could not start authentication: {e}")
     
     # Initialize and run the server
-    logger.info("Starting MCP server with stdio transport")
-    mcp_server.run(transport='http', host='0.0.0.0', port=1337) 
+    logger.info("Starting MCP server over HTTP/SSE on 0.0.0.0:1337")
+    mcp_server.run(transport='sse')
