@@ -126,4 +126,4 @@ def main():
     
     # Initialize and run the server
     logger.info("Starting MCP server with stdio transport")
-    mcp_server.run(transport='stdio') 
+    mcp_server.run(transport='http', host='0.0.0.0', port=1337) 
