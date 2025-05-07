@@ -13,9 +13,10 @@ import requests
 
 # Import from the new callback server module
 from .callback_server import (
-    start_callback_server, 
+    start_callback_server,
+    shutdown_callback_server,
     token_container,
-    update_confirmation
+    callback_server_port
 )
 
 # Import the new Pipeboard authentication
@@ -398,6 +399,16 @@ def exchange_token_for_long_lived(short_lived_token):
 
 async def get_current_access_token() -> Optional[str]:
     """Get the current access token from auth manager"""
+    # Check for environment variable first - this takes highest precedence
+    env_token = os.environ.get("META_ACCESS_TOKEN")
+    if env_token:
+        logger.debug("Using access token from META_ACCESS_TOKEN environment variable")
+        # Basic validation
+        if len(env_token) < 20:  # Most Meta tokens are much longer
+            logger.error(f"TOKEN VALIDATION FAILED: Token from environment variable appears malformed (length: {len(env_token)})")
+            return None
+        return env_token
+        
     # Use the singleton auth manager
     global auth_manager
     
